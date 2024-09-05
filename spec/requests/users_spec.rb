@@ -36,7 +36,6 @@ RSpec.describe 'Users API', type: :request do
       delete "/users/#{another_user.id}", headers: headers
       puts "DELETE /users/:id Response: #{response.body}"  # Inspeciona a resposta da API
 
-      # Reindexa após a deleção
       User.reindex
 
       expect(User.count).to eq(1)  # Verifica se um usuário foi excluído

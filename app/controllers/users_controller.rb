@@ -3,7 +3,6 @@ class UsersController < ApplicationController
   before_action :authorize_request
   before_action :set_user, only: [:show, :update, :destroy]
 
-  # GET /users
   def index
     query = params[:q].presence || "*"
     page = params[:page] || 1
@@ -26,19 +25,18 @@ class UsersController < ApplicationController
     }, status: :ok
   end
 
-  # GET /users/:id
+
   def show
     render json: @user, status: :ok
   end
 
-  # PUT /users/:id
+
   def update
     return render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity unless @user.update(user_params)
 
     render json: @user, status: :ok
   end
 
-  # DELETE /users/:id
   def destroy
     return render json: { error: 'Usuário não encontrado' }, status: :not_found unless @user
 

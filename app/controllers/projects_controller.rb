@@ -2,7 +2,6 @@ class ProjectsController < ApplicationController
   before_action :authorize_request
   before_action :set_project, only: [:show, :update, :destroy]
 
-  # GET /projects
   def index
     query = params[:q].presence || "*"
     page = params[:page] || 1
@@ -26,12 +25,10 @@ class ProjectsController < ApplicationController
     }, status: :ok
   end
 
-  # GET /projects/:id
   def show
     render json: @project, include: :tasks, status: :ok
   end
 
-  # POST /projects
   def create
     project = @current_user.projects.new(project_params)
     if project.save
@@ -41,7 +38,6 @@ class ProjectsController < ApplicationController
     end
   end
 
-  # PUT /projects/:id
   def update
     if @project.update(project_params)
       render json: @project, status: :ok
@@ -50,7 +46,7 @@ class ProjectsController < ApplicationController
     end
   end
 
-  # DELETE /projects/:id
+
   def destroy
     @project.destroy
     render json: { message: "Projeto Deletado" }, status: :ok

@@ -1,4 +1,3 @@
-# spec/models/user_spec.rb
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
@@ -17,7 +16,7 @@ RSpec.describe User, type: :model do
   end
 
   it 'permite formatos válidos de e-mail' do
-    user = build(:user, email: 'valid_email@example.com')  # Email dinâmico
+    user = build(:user, email: 'valid_email@example.com')
     expect(user).to be_valid
   end
 

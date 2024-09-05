@@ -37,12 +37,10 @@ class TasksController < ApplicationController
     }, status: :ok
   end
 
-  # GET /tasks/:id
   def show
     render json: @task, status: :ok
   end
 
-  # POST /tasks
   def create
     project = @current_user.projects.find_by(id: params[:project_id])
     return render json: { errors: ['Projeto não encontrado'] }, status: :not_found unless project
@@ -54,7 +52,6 @@ class TasksController < ApplicationController
     render json: task, status: :created
   end
 
-  # PUT /tasks/:id
   def update
     return render json: { errors: @task.errors.full_messages }, status: :unprocessable_entity unless @task.update(task_params)
 
@@ -62,7 +59,6 @@ class TasksController < ApplicationController
     render json: @task, status: :ok
   end
 
-  # DELETE /tasks/:id
   def destroy
     return render json: { error: 'Erro ao deletar a tarefa' }, status: :unprocessable_entity unless @task.destroy
 
