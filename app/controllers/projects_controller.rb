@@ -4,44 +4,66 @@ class ProjectsController < ApplicationController
 
   # GET /projects
   def index
-    projects = @current_user.projects
-    render json: projects, status: :ok
+    query = params[:q].presence || "*"
+    page = params[:page] || 1
+    per_page = params[:per_page] || 5
+
+    projects = Project.search(
+      query,
+      where: { user_id: @current_user.id },  # Filtra projetos do usuário autenticado
+      fields: [:name, :description],         # Campos de busca
+      match: :word_middle,                   # Busca por palavras parciais
+      order: { created_at: :desc },          # Ordena por data de criação
+      page: page,
+      per_page: per_page                     # Paginação
+    )
+
+    render json: {
+      projects: projects.results,
+      current_page: projects.current_page,
+      total_pages: projects.total_pages,
+      total_count: projects.total_count
+    }, status: :ok
   end
 
   # GET /projects/:id
   def show
-    render json: @project, status: :ok
+    render json: @project, include: :tasks, status: :ok
   end
 
   # POST /projects
   def create
     project = @current_user.projects.new(project_params)
-    return render json: { errors: project.errors.full_messages }, status: :unprocessable_entity unless project.save
-    
-    render json: project, status: :created
+    if project.save
+      render json: project, status: :created
+    else
+      render json: { errors: project.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   # PUT /projects/:id
   def update
-    return render json: { errors: @project.errors.full_messages }, status: :unprocessable_entity unless @project.update(project_params)
-
-    render json: @project, status: :ok
+    if @project.update(project_params)
+      render json: @project, status: :ok
+    else
+      render json: { errors: @project.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   # DELETE /projects/:id
   def destroy
     @project.destroy
-    head :no_content
+    render json: { message: "Projeto Deletado" }, status: :ok
   end
 
   private
 
   def set_project
     @project = @current_user.projects.find_by(id: params[:id])
-    return render json: { error: 'Project not found' }, status: :not_found unless @project
+    render json: { error: 'Projeto não encontrado' }, status: :not_found unless @project
   end
 
   def project_params
-    params.permit(:name, :description)
+    params.require(:project).permit(:name, :description)
   end
 end

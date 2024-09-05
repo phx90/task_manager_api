@@ -58,3 +58,12 @@ gem 'active_model_serializers'
 
 # Gem para testes
 gem 'rspec-rails', group: [:development, :test]
+gem 'factory_bot_rails'
+
+gem 'searchkick'
+
+gem 'elasticsearch'
+
+gem 'pagy'
+
+gem 'shoulda-matchers', '~> 5.0'

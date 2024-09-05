@@ -1,8 +1,18 @@
-class User < ApplicationRecord
+class User < ApplicationRecord  
+  has_many :projects, dependent: :destroy
+  searchkick
   has_secure_password
 
-  has_many :projects, dependent: :destroy
 
   validates :name, presence: true
-  validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
+
+
+  before_save :downcase_email
+
+  private
+
+  def downcase_email
+    self.email = email.downcase
+  end
 end
