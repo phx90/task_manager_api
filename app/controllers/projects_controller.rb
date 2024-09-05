@@ -9,12 +9,12 @@ class ProjectsController < ApplicationController
 
     projects = Project.search(
       query,
-      where: { user_id: @current_user.id },  # Filtra projetos do usuário autenticado
-      fields: [:name, :description],         # Campos de busca
-      match: :word_middle,                   # Busca por palavras parciais
-      order: { created_at: :desc },          # Ordena por data de criação
+      where: { user_id: @current_user.id },  
+      fields: [:name, :description],         
+      match: :word_middle,                   
+      order: { created_at: :desc },          
       page: page,
-      per_page: per_page                     # Paginação
+      per_page: per_page                     
     )
 
     render json: {
@@ -26,7 +26,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    return render json: { error: 'Projeto não encontrado' }, status: :not_found unless @project
+    return render json: { error: 'Project not found' }, status: :not_found unless @project
     render json: @project, include: :tasks, status: :ok
   end
 
@@ -45,14 +45,14 @@ class ProjectsController < ApplicationController
 
   def destroy
     @project.destroy
-    render json: { message: "Projeto Deletado" }, status: :ok
+    render json: { message: 'Project deleted' }, status: :ok
   end
 
   private
 
   def set_project
     @project = @current_user.projects.find_by(id: params[:id])
-    return render json: { error: 'Projeto não encontrado' }, status: :not_found unless @project
+    return render json: { error: 'Project not found' }, status: :not_found unless @project
   end
 
   def project_params

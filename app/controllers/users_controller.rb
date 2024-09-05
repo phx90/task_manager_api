@@ -1,4 +1,3 @@
-# app/controllers/users_controller.rb
 class UsersController < ApplicationController
   before_action :authorize_request
   before_action :set_user, only: [:show, :update, :destroy]
@@ -38,19 +37,19 @@ class UsersController < ApplicationController
   end
 
   def destroy
-    return render json: { error: 'Usuário não encontrado' }, status: :not_found unless @user
+    return render json: { error: 'User not found' }, status: :not_found unless @user
 
-    return render json: { error: 'Erro ao deletar o usuário' }, status: :unprocessable_entity unless @user.destroy
+    return render json: { error: 'Error deleting the user' }, status: :unprocessable_entity unless @user.destroy
 
-    User.reindex  # Reindexa após a deleção
-    render json: { message: 'Usuário Deletado' }, status: :ok
+    User.reindex 
+    render json: { message: 'User deleted' }, status: :ok
   end
 
   private
 
   def set_user
     @user = User.find_by(id: params[:id])
-    return render json: { error: 'Usuário não encontrado' }, status: :not_found unless @user
+    return render json: { error: 'User not found' }, status: :not_found unless @user
   end
 
   def user_params

@@ -2,14 +2,14 @@ POST /signup: Cria um novo usuário.
 
 {
   "name": "xx",
-  "email": "xx@example.com",
+  "email": "xx@email.com",
   "password": "xxx",
   "password_confirmation": "xxx"
 }
 
 POST /login: Faz o login e retorna o token JWT.
 {
-  "email": "xx@example.com",
+  "email": "xx@email.com",
   "password": "xxx"
 }
 

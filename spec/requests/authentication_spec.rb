@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'Authentication', type: :request do
   let(:user) { FactoryBot.create(:user) }
   
-  # Teste para Signup
+
   describe 'POST /signup' do
     it 'creates a new user' do
       expect {
@@ -14,7 +14,7 @@ RSpec.describe 'Authentication', type: :request do
     end
   end
 
-  # Teste para Login
+
   describe 'POST /login' do
     it 'authenticates the user' do
       post '/login', params: { email: user.email, password: user.password }

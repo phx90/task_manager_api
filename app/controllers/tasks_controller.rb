@@ -7,12 +7,10 @@ class TasksController < ApplicationController
     page = params[:page] || 1
     per_page = params[:per_page] || 10
   
-    # Construa o filtro condicionalmente, com valores padrão
     search_filters = {}
     search_filters[:project_id] = params[:project_id] if params[:project_id].present?
     search_filters[:completed] = params[:completed] if params[:completed].present?
   
-    # Realiza a pesquisa com Searchkick, considerando os filtros e parâmetros de busca
     tasks = Task.search(
       query,
       where: search_filters,
@@ -23,12 +21,10 @@ class TasksController < ApplicationController
       per_page: per_page
     )
   
-    # Se não houver tasks retornadas, mostre uma resposta vazia com os metadados de paginação
     if tasks.blank?
       return render json: { tasks: [], current_page: 1, total_pages: 0, total_count: 0 }, status: :ok
     end
   
-    # Retorna as tasks com os metadados
     render json: {
       tasks: tasks.results,
       current_page: tasks.current_page,
@@ -43,7 +39,7 @@ class TasksController < ApplicationController
 
   def create
     project = @current_user.projects.find_by(id: params[:project_id])
-    return render json: { errors: ['Projeto não encontrado'] }, status: :not_found unless project
+    return render json: { errors: ['Project not found'] }, status: :not_found unless project
 
     task = project.tasks.new(task_params)
     return render json: { errors: task.errors.full_messages }, status: :unprocessable_entity unless task.save
@@ -60,10 +56,10 @@ class TasksController < ApplicationController
   end
 
   def destroy
-    return render json: { error: 'Erro ao deletar a tarefa' }, status: :unprocessable_entity unless @task.destroy
+    return render json: { error: 'Error deleting the task' }, status: :unprocessable_entity unless @task.destroy
 
     Task.reindex
-    render json: { message: "Tarefa Deletada" }, status: :ok
+    render json: { message: "Task deleted" }, status: :ok
   end
 
   private
@@ -72,7 +68,7 @@ class TasksController < ApplicationController
     @task = Task.joins(project: :user)
                 .where(projects: { user_id: @current_user.id })
                 .find_by(id: params[:id])
-    return render json: { error: 'Tarefa não encontrada' }, status: :not_found unless @task
+    return render json: { error: 'Task not found' }, status: :not_found unless @task
   end
 
   def task_params

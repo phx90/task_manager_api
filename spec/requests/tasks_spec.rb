@@ -7,7 +7,7 @@ RSpec.describe 'Tasks API', type: :request do
 
   before do
     Task.reindex
-    sleep(1)  # Garante que o Searchkick complete a reindexação
+    sleep(1)  
   end
 
   let(:headers) { { 'Authorization' => "Bearer #{token_generator(user.id)}" } }
@@ -16,15 +16,14 @@ RSpec.describe 'Tasks API', type: :request do
     it 'returns paginated tasks with metadata' do
       get '/tasks', headers: headers, params: { page: 1, per_page: 5, project_id: project.id }
 
-      puts "GET /tasks Response: #{response.body}"  # Log da resposta
+      puts "GET /tasks Response: #{response.body}"  
 
       expect(response).to have_http_status(:ok)
       parsed_response = JSON.parse(response.body)
 
-      # Verifica se a resposta contém as tarefas e a paginação
       expect(parsed_response['tasks'].size).to eq(5)
       expect(parsed_response['current_page']).to eq(1)
-      expect(parsed_response['total_pages']).to eq(3)  # 12 tarefas, 5 por página = 3 páginas
+      expect(parsed_response['total_pages']).to eq(3)  
       expect(parsed_response['total_count']).to eq(12)
     end
   end
@@ -35,14 +34,13 @@ RSpec.describe 'Tasks API', type: :request do
     it 'creates a new task' do
       expect {
         post '/tasks', params: { task: valid_attributes, project_id: project.id }, headers: headers
-        puts "POST /tasks Response: #{response.body}"  # Log da resposta para depuração
+        puts "POST /tasks Response: #{response.body}"  
       }.to change(Task, :count).by(1)
 
       expect(response).to have_http_status(:created)
       parsed_response = JSON.parse(response.body)
       expect(parsed_response['title']).to eq('New Task')
 
-      # Reindexar novamente para garantir que a nova tarefa seja indexada corretamente
       Task.reindex
       sleep(1)
     end
@@ -54,7 +52,7 @@ RSpec.describe 'Tasks API', type: :request do
     it 'deletes the task' do
       expect {
         delete "/tasks/#{task.id}", headers: headers
-        puts "DELETE /tasks/:id Response: #{response.body}"  # Log da resposta para depuração
+        puts "DELETE /tasks/:id Response: #{response.body}"  
       }.to change(Task, :count).by(-1)
 
       expect(response).to have_http_status(:ok)

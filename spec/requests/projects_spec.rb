@@ -5,8 +5,8 @@ RSpec.describe 'Projects API', type: :request do
   let!(:projects) { FactoryBot.create_list(:project, 15, user: user) }
 
   before do
-    Project.reindex # Reindexa o índice de Searchkick no ambiente de teste
-    sleep(1) # Garante que o Searchkick tenha tempo para processar a indexação
+    Project.reindex 
+    sleep(1) 
   end
 
   let(:headers) { { 'Authorization' => "Bearer #{token_generator(user.id)}" } }
@@ -18,10 +18,10 @@ RSpec.describe 'Projects API', type: :request do
       expect(response).to have_http_status(:ok)
       parsed_response = JSON.parse(response.body)
 
-      # Verifica se a resposta contém os projetos e a paginação
+      
       expect(parsed_response['projects'].size).to eq(5)
       expect(parsed_response['current_page']).to eq(1)
-      expect(parsed_response['total_pages']).to eq(3) # 15 projetos, 5 por página = 3 páginas
+      expect(parsed_response['total_pages']).to eq(3) 
       expect(parsed_response['total_count']).to eq(15)
     end
   end
