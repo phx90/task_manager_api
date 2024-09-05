@@ -26,26 +26,22 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    return render json: { error: 'Projeto não encontrado' }, status: :not_found unless @project
     render json: @project, include: :tasks, status: :ok
   end
 
   def create
     project = @current_user.projects.new(project_params)
-    if project.save
-      render json: project, status: :created
-    else
-      render json: { errors: project.errors.full_messages }, status: :unprocessable_entity
-    end
+    return render json: { errors: project.errors.full_messages }, status: :unprocessable_entity unless project.save
+
+    render json: project, status: :created
   end
 
   def update
-    if @project.update(project_params)
-      render json: @project, status: :ok
-    else
-      render json: { errors: @project.errors.full_messages }, status: :unprocessable_entity
-    end
-  end
+    return render json: { errors: @project.errors.full_messages }, status: :unprocessable_entity unless @project.update(project_params)
 
+    render json: @project, status: :ok
+  end
 
   def destroy
     @project.destroy
@@ -56,7 +52,7 @@ class ProjectsController < ApplicationController
 
   def set_project
     @project = @current_user.projects.find_by(id: params[:id])
-    render json: { error: 'Projeto não encontrado' }, status: :not_found unless @project
+    return render json: { error: 'Projeto não encontrado' }, status: :not_found unless @project
   end
 
   def project_params
