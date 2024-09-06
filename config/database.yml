@@ -15,8 +15,8 @@ default: &default
 
 development:
   <<: *default
-  # database: TaskManagerAPI_development
-  database: TaskManagerAPI_test
+  database: TaskManagerAPI_development
+  
 
 test:
   <<: *default
